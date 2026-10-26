@@ -1,38 +1,80 @@
-const display = document.getElementById("display");
+const taskForm = document.getElementById("task-form");
+const taskInput = document.getElementById("task-input");
+const taskList = document.getElementById("task-list");
+const emptyMessage = document.getElementById("empty-message");
+const clearCompletedButton = document.getElementById("clear-completed");
 
-function appendValue(value) {
-    if (display.value === "Math Error" || display.value === "Invalid input") {
-        display.value = "";
-    }
-    display.value += value;
+let tasks = [];
+
+try {
+  tasks = JSON.parse(localStorage.getItem("todoTasks")) || [];
+} catch {
+  tasks = [];
 }
 
-function clearDisplay() {
-    display.value = "";
+function saveTasks() {
+  localStorage.setItem("todoTasks", JSON.stringify(tasks));
 }
 
-function deleteLast() {
-    display.value = display.value.slice(0, -1);
+function renderTasks() {
+  taskList.innerHTML = "";
+
+  tasks.forEach((task) => {
+    const item = document.createElement("li");
+    item.className = `task${task.completed ? " completed" : ""}`;
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = task.completed;
+    checkbox.setAttribute("aria-label", `Mark ${task.text} as completed`);
+    checkbox.addEventListener("change", () => {
+      task.completed = checkbox.checked;
+      saveTasks();
+      renderTasks();
+    });
+
+    const label = document.createElement("label");
+    label.textContent = task.text;
+
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.className = "delete-button";
+    deleteButton.textContent = "Delete";
+    deleteButton.addEventListener("click", () => {
+      tasks = tasks.filter((currentTask) => currentTask.id !== task.id);
+      saveTasks();
+      renderTasks();
+    });
+
+    item.append(checkbox, label, deleteButton);
+    taskList.appendChild(item);
+  });
+
+  emptyMessage.hidden = tasks.length > 0;
 }
 
-function calculate() {
-    const expression = display.value;
-    if (!expression) return;
+taskForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const text = taskInput.value.trim();
 
-    // Permit only calculator characters before evaluating the expression.
-    if (!/^[0-9+\-*/%.()\s]+$/.test(expression)) {
-        display.value = "Invalid input";
-        return;
-    }
+  if (!text) return;
 
-    try {
-        const result = Function('"use strict"; return (' + expression + ')')();
-        if (typeof result !== "number" || !Number.isFinite(result)) {
-            display.value = "Math Error";
-            return;
-        }
-        display.value = Number(result.toPrecision(12)).toString();
-    } catch {
-        display.value = "Math Error";
-    }
-}
+  tasks.push({
+    id: `${Date.now()}-${Math.random()}`,
+    text,
+    completed: false
+  });
+
+  saveTasks();
+  renderTasks();
+  taskInput.value = "";
+  taskInput.focus();
+});
+
+clearCompletedButton.addEventListener("click", () => {
+  tasks = tasks.filter((task) => !task.completed);
+  saveTasks();
+  renderTasks();
+});
+
+renderTasks();

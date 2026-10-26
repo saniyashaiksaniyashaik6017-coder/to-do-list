@@ -1,41 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Calculator</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="calculator">
-        <h1>Simple Calculator</h1>
-        <input type="text" id="display" placeholder="0" readonly>
-        <div class="buttons">
-            <button class="clear" onclick="clearDisplay()">AC</button>
-            <button onclick="deleteLast()">DEL</button>
-            <button onclick="appendValue('%')">%</button>
-            <button class="operator" onclick="appendValue('/')">÷</button>
-
-            <button onclick="appendValue('7')">7</button>
-            <button onclick="appendValue('8')">8</button>
-            <button onclick="appendValue('9')">9</button>
-            <button class="operator" onclick="appendValue('*')">×</button>
-
-            <button onclick="appendValue('4')">4</button>
-            <button onclick="appendValue('5')">5</button>
-            <button onclick="appendValue('6')">6</button>
-            <button class="operator" onclick="appendValue('-')">−</button>
-
-            <button onclick="appendValue('1')">1</button>
-            <button onclick="appendValue('2')">2</button>
-            <button onclick="appendValue('3')">3</button>
-            <button class="operator" onclick="appendValue('+')">+</button>
-
-            <button onclick="appendValue('0')">0</button>
-            <button onclick="appendValue('.')">.</button>
-            <button class="equal" onclick="calculate()">=</button>
-        </div>
-    </div>
-    <script src="script.js"></script>
+  <main class="app">
+    <h1>📝 My To-Do List</h1>
+    <p class="subtitle">Plan your day, one task at a time.</p>
+    <form id="task-form">
+      <input id="task-input" type="text" placeholder="Enter a task..." autocomplete="off" required>
+      <button type="submit">Add Task</button>
+    </form>
+    <ul id="task-list" aria-label="Tasks"></ul>
+    <p id="empty-message">No tasks yet. Add your first task! ✨</p>
+    <button id="clear-completed" class="secondary" type="button">Clear Completed</button>
+  </main>
+  <script src="script.js"></script>
 </body>
 </html>
